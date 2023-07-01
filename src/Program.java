@@ -12,8 +12,14 @@ public class Program extends PApplet{
 	final static float LEFT_MARGIN = 60;
 	final static float VERTICAL_MARGIN = 40;
 	
+	public final static int NEUTRAL_FACING = 0;
+	public final static int RIGHT_FACING = 1;
+	public final static int LEFT_FACING = 2;
+	
+	ArrayList<Sprite> coins;
+	
 	Sprite player;
-	PImage snow, crate, redBrick, brownBrick, playerImage;
+	PImage snow, crate, redBrick, brownBrick, playerImage, gold;
 	ArrayList<Sprite> platforms;
 	float viewX = 0, viewY = 0;
 
@@ -32,10 +38,12 @@ public class Program extends PApplet{
 		player.centerX = 100;
 		player.centerY = 300;
 		platforms = new ArrayList<Sprite>();
+		coins = new ArrayList<Sprite>();
 		redBrick = loadImage("red_brick.png");
 		brownBrick = loadImage("brown_brick.png");
 		crate = loadImage("crate.png");
 		snow = loadImage("snow.png");
+		gold = loadImage("gold1.png");
 		createPlatforms("map.csv");
 	}
 	@Override
@@ -46,6 +54,10 @@ public class Program extends PApplet{
 		resolvePlatformCollisions(player, platforms);
 		for(Sprite sprite: platforms) {
 			sprite.display();
+		}
+		for(Sprite coin: coins) {
+			coin.display();
+			((AnimatedSprite)coin).updateAnimation();
 		}
 	}
 	@Override
@@ -105,6 +117,12 @@ public class Program extends PApplet{
 		        s.centerY = SPRITE_SIZE/2 + row * SPRITE_SIZE;
 		        platforms.add(s);
 		      }
+		      else if(values[col].equals("5")){
+			    Coin coin = new Coin(this, gold, SPRITE_SCALE);
+			    coin.centerX = SPRITE_SIZE/2 + col * SPRITE_SIZE;
+			    coin.centerY = SPRITE_SIZE/2 + row * SPRITE_SIZE;
+			    coins.add(coin);
+			  }
 		    }
 		  }  
 	}
