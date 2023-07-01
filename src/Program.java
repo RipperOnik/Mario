@@ -6,10 +6,16 @@ public class Program extends PApplet{
 	final static float SPRITE_SCALE = 50f/128f;
 	final static float SPRITE_SIZE = 50f;
 	final static float GRAVITY = 0.6f;
-	final static float JUMP_SPEED= -16f;
+	final static float JUMP_SPEED = -14f;
+	
+	final static float RIGHT_MARGIN = 400;
+	final static float LEFT_MARGIN = 60;
+	final static float VERTICAL_MARGIN = 40;
+	
 	Sprite player;
 	PImage snow, crate, redBrick, brownBrick, playerImage;
 	ArrayList<Sprite> platforms;
+	float viewX = 0, viewY = 0;
 
 	public static void main(String[] args) {
 		PApplet.main("Program");
@@ -25,8 +31,6 @@ public class Program extends PApplet{
 		player = new Sprite(this, playerImage, 0.7f);
 		player.centerX = 100;
 		player.centerY = 300;
-		player.changeX = 5;
-		player.changeY = -10;
 		platforms = new ArrayList<Sprite>();
 		redBrick = loadImage("red_brick.png");
 		brownBrick = loadImage("brown_brick.png");
@@ -37,6 +41,7 @@ public class Program extends PApplet{
 	@Override
 	public void draw() {
 		background(255);
+		scroll();
 		player.display();
 		resolvePlatformCollisions(player, platforms);
 		for(Sprite sprite: platforms) {
@@ -55,7 +60,6 @@ public class Program extends PApplet{
 		else if (keyCode == 32 && isOnPlatform(player, platforms)) {
 			player.changeY = JUMP_SPEED;
 		}
-		
 	}
 	@Override
 	public void keyReleased() {
@@ -166,6 +170,25 @@ public class Program extends PApplet{
 		ArrayList<Sprite> collisionList = checkCollisionList(s, walls);
 		s.centerY -= 5;
 		return !collisionList.isEmpty();
+	}
+	void scroll() {
+		float rightBoundary = viewX + width - RIGHT_MARGIN;
+		if (player.getRight() > rightBoundary) {
+			viewX += player.getRight() - rightBoundary;
+		}
+		float leftBoundary = viewX + LEFT_MARGIN;
+		if (player.getLeft() < leftBoundary) {
+			viewX -= leftBoundary - player.getLeft();
+		}
+		float bottomBoundary = viewY + height - VERTICAL_MARGIN;
+		if (player.getBottom() > bottomBoundary) {
+			viewY += player.getBottom() - bottomBoundary;
+		}
+		float topBoundary = viewY + VERTICAL_MARGIN;
+		if (player.getTop() < topBoundary) {
+			viewY -= topBoundary - player.getTop();
+		}
+		translate(-viewX, -viewY);
 	}
 
 }
