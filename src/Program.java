@@ -6,7 +6,7 @@ public class Program extends PApplet{
 	final static float SPRITE_SCALE = 50f/128f;
 	final static float SPRITE_SIZE = 50f;
 	final static float GRAVITY = 0.6f;
-	final static float JUMP_SPEED = -14f;
+	final static float JUMP_SPEED = -16f;
 	
 	final static float RIGHT_MARGIN = 400;
 	final static float LEFT_MARGIN = 60;
@@ -17,11 +17,12 @@ public class Program extends PApplet{
 	public final static int LEFT_FACING = 2;
 	
 	ArrayList<Sprite> coins;
-	
+	int score = 0;
 	Sprite player;
 	PImage snow, crate, redBrick, brownBrick, playerImage, gold;
 	ArrayList<Sprite> platforms;
 	float viewX = 0, viewY = 0;
+	float scoreX = viewX + 50, scoreY = viewY + 50;
 
 	public static void main(String[] args) {
 		PApplet.main("Program");
@@ -52,6 +53,7 @@ public class Program extends PApplet{
 		scroll();
 		player.display();
 		resolvePlatformCollisions(player, platforms);
+		resolveCoinCollection(player, coins);
 		for(Sprite sprite: platforms) {
 			sprite.display();
 		}
@@ -59,6 +61,7 @@ public class Program extends PApplet{
 			coin.display();
 			((AnimatedSprite)coin).updateAnimation();
 		}
+		displayScore();
 	}
 	@Override
 	public void keyPressed() {
@@ -183,6 +186,22 @@ public class Program extends PApplet{
 		}
 		
 	}
+	void resolveCoinCollection(Sprite s, ArrayList<Sprite> collectedCoins) {
+		s.changeY += GRAVITY;
+		s.centerY += s.changeY;
+		s.centerX += s.changeX;
+		ArrayList<Sprite> collisionList = checkCollisionList(s, collectedCoins);
+		
+		// delete collected coins from array
+		for (int i = 0; i < collisionList.size(); i++) {
+			score++;
+			coins.remove(collisionList.get(i));
+			
+		}
+		s.changeY -= GRAVITY;
+		s.centerY -= s.changeY;
+		s.centerX -= s.changeX;
+	}
 	boolean isOnPlatform(Sprite s, ArrayList<Sprite> walls) {
 		s.centerY += 5;
 		ArrayList<Sprite> collisionList = checkCollisionList(s, walls);
@@ -206,7 +225,14 @@ public class Program extends PApplet{
 		if (player.getTop() < topBoundary) {
 			viewY -= topBoundary - player.getTop();
 		}
+		scoreX = viewX + 50;
+		scoreY = viewY + 50;
 		translate(-viewX, -viewY);
+	}
+	void displayScore() {
+		textSize(32);
+		fill(255,0,0);
+		text("Coins: " + score, scoreX, scoreY);
 	}
 
 }
