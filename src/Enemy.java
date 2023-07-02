@@ -1,19 +1,18 @@
-import processing.core.PApplet;
 import processing.core.PImage;
 
 public class Enemy extends AnimatedSprite{
 	float boundaryLeft, boundaryRight;
-	public Enemy(PApplet parent, PImage img, float scale, float bLeft, float bRight) {
+	public Enemy(Program parent, PImage img, float scale, float bLeft, float bRight) {
 		super(parent, img, scale);
 		boundaryLeft = bLeft;
 		boundaryRight = bRight;
 		moveLeft = new PImage[3];
 		for (int i = 0; i < moveLeft.length; i++) {
-			moveLeft[i] = parent.loadImage("spider_walk_left"+(i+1)+".png");
+			moveLeft[i] = parent.loadImage("enemy/spider_walk_left"+(i+1)+".png");
 		}
 		moveRight = new PImage[3];
 		for (int i = 0; i < moveRight.length; i++) {
-			moveRight[i] = parent.loadImage("spider_walk_right"+(i+1)+".png");
+			moveRight[i] = parent.loadImage("enemy/spider_walk_right"+(i+1)+".png");
 		}
 		currentImages = moveRight;
 		direction = Program.RIGHT_FACING;

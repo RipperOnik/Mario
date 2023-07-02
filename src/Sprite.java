@@ -1,4 +1,3 @@
-import processing.core.PApplet;
 import processing.core.PImage;
 
 public class Sprite {
@@ -6,9 +5,9 @@ public class Sprite {
 	float centerX, centerY;
 	float changeX, changeY;
 	float w, h;
-	PApplet parent;
+	Program parent;
 	
-	public Sprite(PApplet parent, String filename, float scale, float x, float y) {
+	public Sprite(Program parent, String filename, float scale, float x, float y) {
 		this.parent = parent;
 		image = parent.loadImage(filename);
 		w = image.width * scale;
@@ -18,10 +17,10 @@ public class Sprite {
 		changeX = 0;
 		changeY = 0;
 	}
-	public Sprite(PApplet parent, String filename, float scale) {
+	public Sprite(Program parent, String filename, float scale) {
 		this(parent, filename, scale, 0, 0);
 	}
-	public Sprite(PApplet parent, PImage img, float scale) {
+	public Sprite(Program parent, PImage img, float scale) {
 		this.parent = parent;
 		image = img;
 		w = image.width * scale;

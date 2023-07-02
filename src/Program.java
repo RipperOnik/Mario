@@ -23,8 +23,8 @@ public class Program extends PApplet{
 	ArrayList<Sprite> coins;
 	Enemy enemy;
 	int score = 0;
-	Sprite player;
-	PImage snow, crate, redBrick, brownBrick, playerImage, gold, spider;
+	Player player;
+	PImage snow, crate, redBrick, brownBrick, playerImage, gold, enemyImage;
 	ArrayList<Sprite> platforms;
 	float viewX = 0, viewY = 0;
 	float scoreX = viewX + 50, scoreY = viewY + 50;
@@ -39,18 +39,18 @@ public class Program extends PApplet{
 	@Override
 	public void setup() {
 		imageMode(CENTER);
-		playerImage = loadImage("player.png");
-		player = new Sprite(this, playerImage, 0.7f);
+		playerImage = loadImage("player/player_stand_right.png");
+		player = new Player(this, playerImage, 100f/128f);
 		player.centerX = 100;
-		player.centerY = 300;
+		player.setBottom(GROUND_LEVEL);
 		platforms = new ArrayList<Sprite>();
 		coins = new ArrayList<Sprite>();
-		spider = loadImage("spider_walk_right1.png");
+		enemyImage = loadImage("enemy/spider_walk_right1.png");
 		redBrick = loadImage("red_brick.png");
 		brownBrick = loadImage("brown_brick.png");
 		crate = loadImage("crate.png");
 		snow = loadImage("snow.png");
-		gold = loadImage("gold1.png");
+		gold = loadImage("coin/gold1.png");
 		createPlatforms("map.csv");
 	}
 	@Override
@@ -58,6 +58,7 @@ public class Program extends PApplet{
 		background(255);
 		scroll();
 		player.display();
+		player.updateAnimation();
 		resolvePlatformCollisions(player, platforms);
 		resolveCoinCollection(player, coins);
 		for(Sprite sprite: platforms) {
@@ -138,7 +139,7 @@ public class Program extends PApplet{
 		      else if(values[col].equals("6")){
 		    	  Float bLeft = col * SPRITE_SIZE;
 		    	  Float bRight = bLeft + 4*SPRITE_SIZE; 
-				  enemy = new Enemy(this, spider, 50f/72f, bLeft, bRight);
+				  enemy = new Enemy(this, enemyImage, 60f/72f, bLeft, bRight);
 				  enemy.centerX = SPRITE_SIZE/2 + col * SPRITE_SIZE;
 				  enemy.centerY = SPRITE_SIZE/2 + row * SPRITE_SIZE;
 		      }
@@ -218,7 +219,7 @@ public class Program extends PApplet{
 		s.centerY -= s.changeY;
 		s.centerX -= s.changeX;
 	}
-	boolean isOnPlatform(Sprite s, ArrayList<Sprite> walls) {
+	public boolean isOnPlatform(Sprite s, ArrayList<Sprite> walls) {
 		s.centerY += 5;
 		ArrayList<Sprite> collisionList = checkCollisionList(s, walls);
 		s.centerY -= 5;

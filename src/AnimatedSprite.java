@@ -1,4 +1,3 @@
-import processing.core.PApplet;
 import processing.core.PImage;
 
 public class AnimatedSprite extends Sprite{
@@ -9,7 +8,7 @@ public class AnimatedSprite extends Sprite{
 	int direction;
 	int index;
 	int frame;
-	public AnimatedSprite(PApplet parent, PImage img, float scale) {
+	public AnimatedSprite(Program parent, PImage img, float scale) {
 		super(parent, img, scale);
 		direction = Program.NEUTRAL_FACING;
 		index = 0;
@@ -49,11 +48,11 @@ public class AnimatedSprite extends Sprite{
 	}
 	// cycle through images
 	public void advanceToNextImage(){
-		index++;
-		if (index == currentImages.length) {
+		if (index >= currentImages.length) {
 			index = 0;
 		}
 		image = currentImages[index];
+		index++;
 	}
 
 }
