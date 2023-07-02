@@ -21,13 +21,13 @@ public class Program extends PApplet{
 	final static float GROUND_LEVEL = HEIGHT - SPRITE_SIZE;
 	
 	ArrayList<Sprite> coins;
-	Enemy enemy;
-	int score = 0;
+	ArrayList<Sprite> enemies;
+	int score;
 	Player player;
 	PImage snow, crate, redBrick, brownBrick, playerImage, gold, enemyImage;
 	ArrayList<Sprite> platforms;
-	float viewX = 0, viewY = 0;
-	float scoreX = viewX + 50, scoreY = viewY + 50;
+	float viewX, viewY;
+	boolean won, lost;
 
 	public static void main(String[] args) {
 		PApplet.main("Program");
@@ -38,12 +38,18 @@ public class Program extends PApplet{
 	}
 	@Override
 	public void setup() {
+		viewX = 0;
+		viewY = 0;
+		score = 0;
+		won = false;
+		lost = false;
 		imageMode(CENTER);
 		playerImage = loadImage("player/player_stand_right.png");
 		player = new Player(this, playerImage, 100f/128f);
 		player.centerX = 100;
 		player.setBottom(GROUND_LEVEL);
 		platforms = new ArrayList<Sprite>();
+		enemies = new ArrayList<Sprite>();
 		coins = new ArrayList<Sprite>();
 		enemyImage = loadImage("enemy/spider_walk_right1.png");
 		redBrick = loadImage("red_brick.png");
@@ -55,23 +61,34 @@ public class Program extends PApplet{
 	}
 	@Override
 	public void draw() {
-		background(255);
-		scroll();
-		player.display();
-		player.updateAnimation();
-		resolvePlatformCollisions(player, platforms);
-		resolveCoinCollection(player, coins);
-		for(Sprite sprite: platforms) {
-			sprite.display();
+
+	
+		if (won || lost) {
+			displayGameOver();
+		}else {
+			background(255);
+			scroll();
+			player.display();
+			player.updateAnimation();
+			resolvePlatformCollisions(player, platforms);
+			resolveCoinCollection(player, coins);
+			checkDeath();
+			for(Sprite sprite: platforms) {
+				sprite.display();
+			}
+			for(Sprite coin: coins) {
+				coin.display();
+				((AnimatedSprite)coin).updateAnimation();
+			}
+			displayScore();
+			for(Sprite enemy: enemies) {
+				((Enemy)enemy).display();
+				((Enemy)enemy).update();
+				((Enemy)enemy).updateAnimation();
+			}
 		}
-		for(Sprite coin: coins) {
-			coin.display();
-			((AnimatedSprite)coin).updateAnimation();
-		}
-		displayScore();
-		enemy.display();
-		enemy.update();
-		enemy.updateAnimation();
+		
+		
 	}
 	@Override
 	public void keyPressed() {
@@ -139,9 +156,10 @@ public class Program extends PApplet{
 		      else if(values[col].equals("6")){
 		    	  Float bLeft = col * SPRITE_SIZE;
 		    	  Float bRight = bLeft + 4*SPRITE_SIZE; 
-				  enemy = new Enemy(this, enemyImage, 60f/72f, bLeft, bRight);
+				  Enemy enemy = new Enemy(this, enemyImage, 60f/72f, bLeft, bRight);
 				  enemy.centerX = SPRITE_SIZE/2 + col * SPRITE_SIZE;
 				  enemy.centerY = SPRITE_SIZE/2 + row * SPRITE_SIZE;
+				  enemies.add(enemy);
 		      }
 		    }
 		  }  
@@ -213,11 +231,30 @@ public class Program extends PApplet{
 		for (int i = 0; i < collisionList.size(); i++) {
 			score++;
 			coins.remove(collisionList.get(i));
-			
+		}
+		if (coins.isEmpty()) {
+			won = true;
 		}
 		s.changeY -= GRAVITY;
 		s.centerY -= s.changeY;
 		s.centerX -= s.changeX;
+	}
+	void checkDeath() {
+		player.changeY += GRAVITY;
+		player.centerY += player.changeY;
+		player.centerX += player.changeX;
+		ArrayList<Sprite> collisionList = checkCollisionList(player, enemies);
+		
+		if (collisionList.size() > 0) {
+			lost = true;
+		}
+		player.changeY -= GRAVITY;
+		player.centerY -= player.changeY;
+		player.centerX -= player.changeX;
+		
+		if (player.getTop() > GROUND_LEVEL) {
+			lost = true;
+		}
 	}
 	public boolean isOnPlatform(Sprite s, ArrayList<Sprite> walls) {
 		s.centerY += 5;
@@ -242,14 +279,28 @@ public class Program extends PApplet{
 		if (player.getTop() < topBoundary) {
 			viewY -= topBoundary - player.getTop();
 		}
-		scoreX = viewX + 50;
-		scoreY = viewY + 50;
 		translate(-viewX, -viewY);
 	}
 	void displayScore() {
 		textSize(32);
 		fill(255,0,0);
-		text("Coins: " + score, scoreX, scoreY);
+		text("Coins: " + score, viewX + 50, viewY + 50);
 	}
-
+	void displayGameOver() {
+		fill(0,0,255);
+		scroll();
+		float textX = viewX + width/2 - 100;
+		float textY = viewY + height/2;
+		text("GAME OVER", textX, textY);
+		if (lost) {
+			text("YOU LOSE", textX, textY + 50);
+		}else if(won) {
+			text("YOU WIN", textX, textY + 50);
+		}
+		text("PRESS SPACE TO RESTART", textX, textY + 100);
+		if (keyCode == 32) {
+			setup();
+		}
+		
+	}
 }

@@ -1,7 +1,6 @@
 import processing.core.PImage;
 
 public class Player extends AnimatedSprite{
-	int lives;
 	boolean onPlatform, inPlace;
 	PImage[] standLeft;
 	PImage[] standRight;
@@ -9,7 +8,6 @@ public class Player extends AnimatedSprite{
 	PImage[] jumpRight;
 	public Player(Program parent, PImage img, float scale) {
 		super(parent, img, scale);
-		lives = 3;
 		direction = Program.RIGHT_FACING;
 		onPlatform = false;
 		inPlace = true;
