@@ -16,7 +16,7 @@ public class Enemy extends AnimatedSprite{
 		}
 		currentImages = moveRight;
 		direction = Program.RIGHT_FACING;
-		changeX = 2;
+		changeX = 1;
 	}
 	public void update() {
 		super.update();
