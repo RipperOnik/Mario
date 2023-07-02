@@ -16,10 +16,15 @@ public class Program extends PApplet{
 	public final static int RIGHT_FACING = 1;
 	public final static int LEFT_FACING = 2;
 	
+	final static float WIDTH = SPRITE_SIZE * 16;
+	final static float HEIGHT = SPRITE_SIZE * 12;
+	final static float GROUND_LEVEL = HEIGHT - SPRITE_SIZE;
+	
 	ArrayList<Sprite> coins;
+	Enemy enemy;
 	int score = 0;
 	Sprite player;
-	PImage snow, crate, redBrick, brownBrick, playerImage, gold;
+	PImage snow, crate, redBrick, brownBrick, playerImage, gold, spider;
 	ArrayList<Sprite> platforms;
 	float viewX = 0, viewY = 0;
 	float scoreX = viewX + 50, scoreY = viewY + 50;
@@ -40,6 +45,7 @@ public class Program extends PApplet{
 		player.centerY = 300;
 		platforms = new ArrayList<Sprite>();
 		coins = new ArrayList<Sprite>();
+		spider = loadImage("spider_walk_right1.png");
 		redBrick = loadImage("red_brick.png");
 		brownBrick = loadImage("brown_brick.png");
 		crate = loadImage("crate.png");
@@ -62,6 +68,9 @@ public class Program extends PApplet{
 			((AnimatedSprite)coin).updateAnimation();
 		}
 		displayScore();
+		enemy.display();
+		enemy.update();
+		enemy.updateAnimation();
 	}
 	@Override
 	public void keyPressed() {
@@ -126,6 +135,13 @@ public class Program extends PApplet{
 			    coin.centerY = SPRITE_SIZE/2 + row * SPRITE_SIZE;
 			    coins.add(coin);
 			  }
+		      else if(values[col].equals("6")){
+		    	  Float bLeft = col * SPRITE_SIZE;
+		    	  Float bRight = bLeft + 4*SPRITE_SIZE; 
+				  enemy = new Enemy(this, spider, 50f/72f, bLeft, bRight);
+				  enemy.centerX = SPRITE_SIZE/2 + col * SPRITE_SIZE;
+				  enemy.centerY = SPRITE_SIZE/2 + row * SPRITE_SIZE;
+		      }
 		    }
 		  }  
 	}
