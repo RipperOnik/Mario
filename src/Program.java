@@ -28,6 +28,7 @@ public class Program extends PApplet{
 	ArrayList<Sprite> platforms;
 	float viewX, viewY;
 	boolean won, lost;
+	
 
 	public static void main(String[] args) {
 		PApplet.main("Program");
@@ -61,8 +62,6 @@ public class Program extends PApplet{
 	}
 	@Override
 	public void draw() {
-
-	
 		if (won || lost) {
 			displayGameOver();
 		}else {
@@ -87,8 +86,6 @@ public class Program extends PApplet{
 				((Enemy)enemy).updateAnimation();
 			}
 		}
-		
-		
 	}
 	@Override
 	public void keyPressed() {
